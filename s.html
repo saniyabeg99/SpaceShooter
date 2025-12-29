@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Neon Strike: Star Drift | SANIYA BEG</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap');
-        body { margin: 0; overflow: hidden; background: #000; font-family: 'Orbitron', sans-serif; }
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Orbitron', sans-serif; touch-action: none; }
         .glass-hud { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); border: 1px solid rgba(0, 242, 255, 0.5); }
         .neon-text-cyan { text-shadow: 0 0 15px #00f2ff; color: #00f2ff; }
         .neon-text-pink { text-shadow: 0 0 20px #ff007b; color: #ff007b; }
@@ -25,37 +25,43 @@
 
     <div id="hit-flash"></div>
 
-    <div class="fixed inset-0 pointer-events-none z-10 p-8 text-white flex flex-col justify-between">
+    <div class="fixed inset-0 pointer-events-none z-10 p-4 md:p-8 text-white flex flex-col justify-between">
         <div class="flex flex-col items-center">
-             <div id="level-display" class="glass-hud px-10 py-2 rounded-full border-cyan-400/50 text-xl font-black tracking-[0.5em] neon-text-cyan pointer-events-auto">
+             <div id="level-display" class="glass-hud px-6 md:px-10 py-2 rounded-full border-cyan-400/50 text-sm md:text-xl font-black tracking-[0.2em] md:tracking-[0.5em] neon-text-cyan pointer-events-auto">
                 LEVEL 1
              </div>
         </div>
 
         <div class="flex justify-between items-end">
-            <div class="glass-hud p-5 rounded-2xl pointer-events-auto border-l-4 border-cyan-500">
-                <p class="text-[10px] tracking-widest text-cyan-400 font-bold uppercase mb-2">Hull Integrity</p>
-                <div id="lives-row" class="flex gap-3 text-3xl">
+            <div class="glass-hud p-3 md:p-5 rounded-2xl pointer-events-auto border-l-4 border-cyan-500">
+                <p class="text-[8px] md:text-[10px] tracking-widest text-cyan-400 font-bold uppercase mb-1 md:mb-2">Hull Integrity</p>
+                <div id="lives-row" class="flex gap-2 md:gap-3 text-xl md:text-3xl">
                     <span>❤️</span><span>❤️</span><span>❤️</span>
                 </div>
             </div>
-            <div class="glass-hud p-5 rounded-2xl text-right pointer-events-auto min-w-[200px] border-r-4 border-cyan-500">
-                <p class="text-[10px] tracking-widest text-cyan-400 font-bold uppercase">Points</p>
-                <p id="score-display" class="text-5xl font-black italic neon-text-cyan">0</p>
+            <div class="glass-hud p-3 md:p-5 rounded-2xl text-right pointer-events-auto min-w-[120px] md:min-w-[200px] border-r-4 border-cyan-500">
+                <p class="text-[8px] md:text-[10px] tracking-widest text-cyan-400 font-bold uppercase">Points</p>
+                <p id="score-display" class="text-2xl md:text-5xl font-black italic neon-text-cyan">0</p>
             </div>
         </div>
     </div>
 
-    <div id="game-over" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-3xl">
-        <div class="text-center">
-            <h1 class="text-8xl font-black text-pink-500 italic mb-2 tracking-tighter neon-text-pink">THE END</h1>
-            <div class="glass-hud p-10 rounded-3xl mb-12 border-pink-500/50">
-                <p id="final-score" class="text-7xl font-black text-white italic tracking-tighter">0</p>
+    <div id="touch-controls" class="fixed inset-0 z-5 md:hidden">
+        <div id="left-zone" class="absolute inset-y-0 left-0 w-1/2"></div>
+        <div id="right-zone" class="absolute inset-y-0 right-0 w-1/2"></div>
+    </div>
+
+    <div id="game-over" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-3xl p-6">
+        <div class="text-center w-full">
+            <h1 class="text-5xl md:text-8xl font-black text-pink-500 italic mb-2 tracking-tighter neon-text-pink">THE END</h1>
+            <div class="glass-hud p-6 md:p-10 rounded-3xl mb-8 md:l-12 border-pink-500/50 inline-block">
+                <p id="final-score" class="text-4xl md:text-7xl font-black text-white italic tracking-tighter">0</p>
             </div>
-            <button onclick="location.reload()" class="px-16 py-6 bg-cyan-400 text-black font-black uppercase text-xl tracking-[0.3em] hover:bg-white transition-all transform skew-x-[-12deg] mb-12">
+            <br>
+            <button onclick="location.reload()" class="px-10 md:px-16 py-4 md:py-6 bg-cyan-400 text-black font-black uppercase text-lg md:text-xl tracking-[0.3em] hover:bg-white transition-all transform skew-x-[-12deg] mb-8">
                 TRY AGAIN
             </button>
-            <p class="text-cyan-400 text-sm tracking-[0.8em] font-bold uppercase opacity-80">Made by SANIYA BEG</p>
+            <p class="text-cyan-400 text-[10px] md:text-sm tracking-[0.4em] md:tracking-[0.8em] font-bold uppercase opacity-80">Made by SANIYA BEG</p>
         </div>
     </div>
 
@@ -74,7 +80,7 @@
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             document.body.appendChild(renderer.domElement);
 
             const pLight = new THREE.PointLight(0x00f2ff, 15, 200);
@@ -82,20 +88,16 @@
             scene.add(pLight);
             scene.add(new THREE.AmbientLight(0x444444));
 
-            // FIXED STARS: Using Canvas texture to make them ROUND DOTS instead of squares
             const starCanvas = document.createElement('canvas');
-            starCanvas.width = 32;
-            starCanvas.height = 32;
+            starCanvas.width = 32; starCanvas.height = 32;
             const ctx = starCanvas.getContext('2d');
             ctx.fillStyle = "white";
-            ctx.beginPath();
-            ctx.arc(16, 16, 14, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(16, 16, 14, 0, Math.PI * 2); ctx.fill();
             const starTexture = new THREE.CanvasTexture(starCanvas);
 
             const starGeo = new THREE.BufferGeometry();
             const starCoords = [];
-            for(let i=0; i<2500; i++) {
+            for(let i=0; i<2000; i++) {
                 starCoords.push((Math.random()-0.5)*600, (Math.random()-0.5)*600, (Math.random()-0.5)*1000);
             }
             starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starCoords, 3));
@@ -113,61 +115,63 @@
             
             const engineGeo = new THREE.CylinderGeometry(0.6, 0.6, 1.5);
             const engineL = new THREE.Mesh(engineGeo, shipMat);
-            engineL.position.set(-1.8, -0.2, 1.5);
-            engineL.rotation.x = Math.PI/2;
+            engineL.position.set(-1.8, -0.2, 1.5); engineL.rotation.x = Math.PI/2;
             const engineR = new THREE.Mesh(engineGeo, shipMat);
-            engineR.position.set(1.8, -0.2, 1.5);
-            engineR.rotation.x = Math.PI/2;
+            engineR.position.set(1.8, -0.2, 1.5); engineR.rotation.x = Math.PI/2;
             
             ship.add(body, cockpit, wingL, wingR, engineL, engineR);
             scene.add(ship);
 
-            // BLUE GRID RESTORED
             const grid = new THREE.GridHelper(2000, 80, 0x00f2ff, 0x001122);
             grid.position.y = -10;
             scene.add(grid);
 
-            setInterval(() => { if(!isGameOver) spawnObstacle(); }, 150); 
+            setInterval(() => { if(!isGameOver) spawnObstacle(); }, 160); 
 
             window.addEventListener('keydown', (e) => { 
                 if(keys.hasOwnProperty(e.code)) keys[e.code] = true; 
                 if(e.code === 'Space') fireLaser(); 
             });
             window.addEventListener('keyup', (e) => { if(keys.hasOwnProperty(e.code)) keys[e.code] = false; });
-            window.addEventListener('resize', onWindowResize);
+            
+            // Fixed Touch Logic
+            const leftZone = document.getElementById('left-zone');
+            const rightZone = document.getElementById('right-zone');
 
+            leftZone.addEventListener('touchstart', (e) => { e.preventDefault(); keys.ArrowLeft = true; fireLaser(); });
+            leftZone.addEventListener('touchend', () => { keys.ArrowLeft = false; });
+            rightZone.addEventListener('touchstart', (e) => { e.preventDefault(); keys.ArrowRight = true; fireLaser(); });
+            rightZone.addEventListener('touchend', () => { keys.ArrowRight = false; });
+
+            window.addEventListener('resize', onWindowResize);
             animate();
         }
 
         function spawnObstacle() {
             const isTitan = level >= 2 && Math.random() > 0.75; 
             let geo, mat, mesh;
-
             if (isTitan) {
-                geo = new THREE.SphereGeometry(12, 32, 32);
-                mat = new THREE.MeshStandardMaterial({ color: 0x00ff00, emissive: 0x00ff00, emissiveIntensity: 4, wireframe: true });
+                geo = new THREE.SphereGeometry(12, 24, 24);
+                mat = new THREE.MeshStandardMaterial({ color: 0x00ff00, emissive: 0x00ff00, emissiveIntensity: 3, wireframe: true });
                 mesh = new THREE.Mesh(geo, mat);
                 mesh.userData = { health: 2, speed: 1.2, type: 'titan' };
             } else {
-                geo = new THREE.SphereGeometry(5, 24, 24);
-                mat = new THREE.MeshStandardMaterial({ color: 0xff007b, emissive: 0xff007b, emissiveIntensity: 5 });
+                geo = new THREE.SphereGeometry(5, 20, 20);
+                mat = new THREE.MeshStandardMaterial({ color: 0xff007b, emissive: 0xff007b, emissiveIntensity: 4 });
                 mesh = new THREE.Mesh(geo, mat);
                 mesh.userData = { health: 1, speed: 3.5, type: 'regular' };
             }
-
             mesh.position.set((Math.random() - 0.5) * 80, Math.random() * 35 - 5, -350);
             scene.add(mesh);
             obstacles.push(mesh);
         }
 
         function fireLaser() {
-            // ENHANCED VISIBILITY: Thicker, longer, and bright electric yellow
-            const geo = new THREE.CylinderGeometry(0.5, 0.5, 6, 8);
-            const mat = new THREE.MeshStandardMaterial({ color: 0xffff00, emissive: 0xffff00, emissiveIntensity: 40 });
+            const geo = new THREE.CylinderGeometry(0.4, 0.4, 6, 8);
+            const mat = new THREE.MeshStandardMaterial({ color: 0xffff00, emissive: 0xffff00, emissiveIntensity: 20 });
             const l1 = new THREE.Mesh(geo, mat);
             const l2 = new THREE.Mesh(geo, mat);
-            l1.rotation.x = Math.PI/2;
-            l2.rotation.x = Math.PI/2;
+            l1.rotation.x = l2.rotation.x = Math.PI/2;
             l1.position.set(ship.position.x - 2.5, ship.position.y, ship.position.z - 2);
             l2.position.set(ship.position.x + 2.5, ship.position.y, ship.position.z - 2);
             scene.add(l1, l2);
@@ -176,9 +180,15 @@
 
         function onHit() {
             lives--;
-            document.getElementById('lives-row').innerHTML = '❤️'.repeat(lives);
+            // Fix: UI update now accurately reflects lives count
+            const livesDisplay = document.getElementById('lives-row');
+            if(lives >= 0) {
+                livesDisplay.innerHTML = '❤️'.repeat(lives);
+            }
+            
             document.getElementById('hit-flash').style.opacity = '1';
             setTimeout(() => document.getElementById('hit-flash').style.opacity = '0', 100);
+            
             if (lives <= 0) {
                 isGameOver = true;
                 document.getElementById('final-score').innerText = score.toLocaleString();
@@ -214,42 +224,55 @@
             ship.rotation.z = THREE.MathUtils.lerp(ship.rotation.z, keys.ArrowLeft ? 0.6 : keys.ArrowRight ? -0.6 : 0, 0.1);
             camera.position.x = THREE.MathUtils.lerp(camera.position.x, ship.position.x * 0.4, 0.05);
 
-            lasers.forEach((laser, lIdx) => {
-                laser.position.z -= 25;
-                if(laser.position.z < -400) { scene.remove(laser); lasers.splice(lIdx, 1); return; }
+            for (let i = lasers.length - 1; i >= 0; i--) {
+                lasers[i].position.z -= 25;
+                if (lasers[i].position.z < -400) {
+                    scene.remove(lasers[i]);
+                    lasers.splice(i, 1);
+                }
+            }
 
-                obstacles.forEach((obs, oIdx) => {
-                    const blastRadius = obs.userData.type === 'titan' ? 14 : 8;
-                    if (laser.position.distanceTo(obs.position) < blastRadius) {
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                let obs = obstacles[i];
+                obs.position.z += obs.userData.speed;
+                
+                // Collision with lasers
+                for (let j = lasers.length - 1; j >= 0; j--) {
+                    let laser = lasers[j];
+                    if (laser.position.distanceTo(obs.position) < (obs.userData.type === 'titan' ? 14 : 8)) {
                         obs.userData.health--;
                         scene.remove(laser);
-                        lasers.splice(lIdx, 1);
+                        lasers.splice(j, 1);
                         if(obs.userData.health <= 0) {
                             scene.remove(obs);
-                            obstacles.splice(oIdx, 1);
+                            obstacles.splice(i, 1);
                             score += 2500;
+                            break; 
                         }
                     }
-                });
-            });
-
-            obstacles.forEach((obs, idx) => {
-                obs.position.z += obs.userData.speed;
-                const shipHitBox = obs.userData.type === 'titan' ? 11 : 6.5;
-                if(obs.position.distanceTo(ship.position) < shipHitBox) {
-                    scene.remove(obs);
-                    obstacles.splice(idx, 1);
-                    onHit();
                 }
-                if(obs.position.z > 60) { scene.remove(obs); obstacles.splice(idx, 1); }
-            });
+
+                // Collision with ship
+                if(obstacles[i] && obs.position.distanceTo(ship.position) < (obs.userData.type === 'titan' ? 11 : 6.5)) {
+                    scene.remove(obs);
+                    obstacles.splice(i, 1);
+                    onHit();
+                } else if(obs.position.z > 60) {
+                    scene.remove(obs);
+                    obstacles.splice(i, 1);
+                }
+            }
 
             score += 40;
             document.getElementById('score-display').innerText = score.toLocaleString();
             renderer.render(scene, camera);
         }
-
         init();
     </script>
 </body>
+</html>
+        init();
+    </script>
+</body>
+
 </html>
